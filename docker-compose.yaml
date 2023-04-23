@@ -1,0 +1,31 @@
+version: "3"
+
+networks: 
+  erp:
+
+services:
+  db:
+    container_name: mariadb
+    image: mariadb:10.8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: erp123
+      MYSQL_USER: adam
+      MYSQL_PASSWORD: adam123
+    volumes:
+      - ./data:/var/lib/mysql
+      - ./my.cnf:/etc/mysql/my.cnf
+    ports:
+      - "127.0.0.1:3306:3306"
+    networks:
+    - erp
+
+  adminer:
+    image: adminer:4.7.8
+    container_name: adminer
+    restart: always
+    command: php -S 0.0.0.0:8080 -t /var/www/html
+    ports:
+    - 6010:8080
+    networks:
+    - erp
