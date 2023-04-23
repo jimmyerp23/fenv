@@ -6,19 +6,27 @@ networks:
 services:
   db:
     container_name: mariadb
-    image: mariadb:10.8
+    image: mariadb:10.6
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: erp123
       MYSQL_USER: adam
       MYSQL_PASSWORD: adam123
     volumes:
-      - ./data:/var/lib/mysql
       - ./my.cnf:/etc/mysql/my.cnf
+      - db-data:/var/lib/mysql
     ports:
       - "127.0.0.1:3306:3306"
     networks:
     - erp
+
+  redis:
+    image: redis:6.2-alpine
+    deploy:
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - redis-data:/data
 
   adminer:
     image: adminer:4.7.8
@@ -29,3 +37,7 @@ services:
     - 6010:8080
     networks:
     - erp
+
+volumes:
+  db-data:
+  redis-data:
